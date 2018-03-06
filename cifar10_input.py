@@ -1,11 +1,15 @@
 # Coder: Wenxin Xu
 # Github: https://github.com/wenxinxu/resnet_in_tensorflow
 # ==============================================================================
-import tarfile
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from six.moves import xrange
 from six.moves import urllib
+import tarfile
 import sys
 import numpy as np
-import cPickle
+import pickle
 import os
 import cv2
 
@@ -60,7 +64,7 @@ def _read_one_batch(path, is_random_label):
     :return: image numpy arrays and label numpy arrays
     '''
     fo = open(path, 'rb')
-    dicts = cPickle.load(fo)
+    dicts = pickle.load(fo,encoding='latin1')
     fo.close()
 
     data = dicts['data']
@@ -77,7 +81,7 @@ def read_in_all_images(address_list, shuffle=True, is_random_label = False):
     This function reads all training or validation data, shuffles them if needed, and returns the
     images and the corresponding labels as numpy arrays
 
-    :param address_list: a list of paths of cPickle files
+    :param address_list: a list of paths of pickle files
     :return: concatenated numpy array of data and labels. Data are in 4D arrays: [num_images,
     image_height, image_width, image_depth] and labels are in 1D arrays: [num_images]
     """
@@ -85,7 +89,7 @@ def read_in_all_images(address_list, shuffle=True, is_random_label = False):
     label = np.array([])
 
     for address in address_list:
-        print 'Reading images from ' + address
+        print('Reading images from ' + address)
         batch_data, batch_label = _read_one_batch(address, is_random_label)
         # Concatenate along axis 0 by default
         data = np.concatenate((data, batch_data))
@@ -100,7 +104,7 @@ def read_in_all_images(address_list, shuffle=True, is_random_label = False):
 
 
     if shuffle is True:
-        print 'Shuffling'
+        print('Shuffling')
         order = np.random.permutation(num_data)
         data = data[order, ...]
         label = label[order]
